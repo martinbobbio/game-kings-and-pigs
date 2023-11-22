@@ -25,7 +25,7 @@ const Menu = ({ onStartGame, isGameRunning }: MenuProps) => {
   return (
     <MenuStyled>
       {!isGameRunning && <BackgroundBlur />}
-      <Screen _active={isGameRunning.toString()}>
+      <Screen $active={isGameRunning.toString()}>
         <Title>Kings And Pigs</Title>
         <ButtonPlay onClick={onStartGame}>
           <FAIcon

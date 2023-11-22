@@ -2,7 +2,7 @@ import { BREAKPOINTS } from '@/constants';
 import { styled } from 'styled-components';
 
 interface ScreenProps {
-  _active: string;
+  $active: string;
 }
 
 export const MenuStyled = styled.div`
@@ -16,7 +16,7 @@ export const Screen = styled.div<ScreenProps>`
   position: absolute;
   z-index: 2;
   top: 0;
-  opacity: ${({ _active }) => (_active === 'false' ? '1' : '0')};
+  opacity: ${({ $active }) => ($active === 'false' ? '1' : '0')};
   left: 0px;
   width: 100%;
   height: 100%;

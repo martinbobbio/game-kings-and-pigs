@@ -22,9 +22,9 @@ const Text = ({
   return (
     <TextStyled
       className='text'
-      _color={color}
-      _size={size}
-      _weight={fontWeight}
+      $color={color}
+      $size={size}
+      $weight={fontWeight}
     >
       {children}
     </TextStyled>

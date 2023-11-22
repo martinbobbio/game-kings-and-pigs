@@ -26,7 +26,7 @@ const FAIcon = ({
   color = 'default',
 }: IconProps) => {
   return (
-    <FAIconStyled className='icon' _color={color} _size={size}>
+    <FAIconStyled className='icon' $color={color} $size={size}>
       <FontAwesomeIcon icon={icon} className={`fa-${animation}`} />
     </FAIconStyled>
   );
