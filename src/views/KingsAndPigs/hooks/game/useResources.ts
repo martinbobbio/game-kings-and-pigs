@@ -13,7 +13,7 @@ interface SoundPaths {
   [key: string]: string;
 }
 
-const uri = '../kings-and-pigs/sprites/';
+const uri = '../sprites/';
 const texturePaths: TexturePaths = {
   king: {
     idle: `${uri}king/idle.png`,
@@ -70,16 +70,16 @@ const texturePaths: TexturePaths = {
 };
 
 const soundPaths: SoundPaths = {
-  music: '../kings-and-pigs/sound/music.mp3',
-  jump: '../kings-and-pigs/sound/jump.wav',
-  sword: '../kings-and-pigs/sound/sword.wav',
-  walk: '../kings-and-pigs/sound/walk.wav',
-  doorIn: '../kings-and-pigs/sound/door-in.mp3',
-  doorOut: '../kings-and-pigs/sound/door-out.mp3',
-  diamond: '../kings-and-pigs/sound/diamond.mp3',
-  fall: '../kings-and-pigs/sound/fall.mp3',
-  run: '../kings-and-pigs/sound/run.mp3',
-  boxBreak: '../kings-and-pigs/sound/box-break.mp3',
+  music: '../sound/music.mp3',
+  jump: '../sound/jump.wav',
+  sword: '../sound/sword.wav',
+  walk: '../sound/walk.wav',
+  doorIn: '../sound/door-in.mp3',
+  doorOut: '../sound/door-out.mp3',
+  diamond: '../sound/diamond.mp3',
+  fall: '../sound/fall.mp3',
+  run: '../sound/run.mp3',
+  boxBreak: '../sound/box-break.mp3',
 };
 
 /**

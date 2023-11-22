@@ -84,7 +84,7 @@ export const Information = styled.div`
 
 export const BackgroundBlur = styled.div`
   height: 100%;
-  background: url('./kings-and-pigs/img/background-menu.gif');
+  background: url('./img/background-menu.gif');
   background-position: center center;
   background-size: cover;
   filter: blur(5px);
