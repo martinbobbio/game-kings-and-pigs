@@ -1,0 +1,23 @@
+{
+    "printWidth": 80, 
+    "tabWidth": 2,
+    "useTabs": false,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "semi": true,
+    "jsxSingleQuote": true,
+    "jsxBracketSameLine": false,
+    "arrowParens": "always",
+    "endOfLine": "auto",
+    "overrides": [
+      {
+        "files": "*styled.tsx",
+        "options": {
+          "parser": "typescript",
+          "plugins": [
+            "prettier-plugin-styled-components"
+          ]
+        }
+      }
+    ]
+  }
