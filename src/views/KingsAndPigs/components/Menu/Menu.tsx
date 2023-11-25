@@ -48,7 +48,7 @@ const Menu = ({ onStartGame, isGameRunning }: MenuProps) => {
             <span className='underline'>Jump:</span> Press W or ArrowDown
           </Text>
           <Text size='md'>
-            <span className='underline'>Attack:</span> Press E
+            <span className='underline'>Attack:</span> Press E{' '}
           </Text>
         </Information>
       </Screen>

@@ -12,3 +12,4 @@ export { default as Decorations } from './Decorations/Decorations';
 export { default as Items } from './Items/Items';
 export { default as Boxes } from './Boxes/Boxes';
 export { default as EffectBlinking } from './EffectBlinking/EffectBlinking';
+export { default as DetectResolution } from './DetectResolution/DetectResolution';

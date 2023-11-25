@@ -15,7 +15,9 @@ interface ThemeWrapperProps {
  */
 const ThemeWrapper = ({ children }: ThemeWrapperProps) => {
   const { isDarkMode } = useDarkMode();
+
   const theme = isDarkMode ? CONFIG.theme.dark : CONFIG.theme.light;
+
   return (
     <ThemeStyledComponents theme={theme}>
       <ThemeMaterial theme={createTheme(theme)}>{children}</ThemeMaterial>

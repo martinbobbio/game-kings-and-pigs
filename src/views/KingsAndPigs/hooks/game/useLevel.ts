@@ -82,7 +82,7 @@ const useLevel = () => {
   };
 
   const loadLevelTexture = useCallback(async () => {
-    const source = await import(`../../levels/level-${currentLevel}.png`).then(
+    const source = await import(`../../data/level-${currentLevel}.png`).then(
       (module) => module.default
     );
     const resources: Record<string, Texture> = await Assets.load([source]);
@@ -92,7 +92,7 @@ const useLevel = () => {
 
   const loadlLevelData = useCallback(async () => {
     const levelData: LevelData = await import(
-      `../../levels/level-${currentLevel}.json`
+      `../../data/level-${currentLevel}.json`
     ).then((module) => module.default);
 
     const main = levelData.layers.find(

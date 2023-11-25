@@ -6,10 +6,10 @@ export const ControlsStyled = styled.div`
   position: absolute;
   height: 200px;
   width: 100%;
-  display: none;
   bottom: 0;
-  @media (max-width: ${BREAKPOINTS.small}) {
-    display: inline;
+  display: none;
+  @media (max-width: ${BREAKPOINTS.large}) and (max-height: ${BREAKPOINTS.small}) {
+    display: initial;
   }
 `;
 

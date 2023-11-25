@@ -39,7 +39,7 @@ export const Title = styled.h1`
   -webkit-text-fill-color: transparent;
   background-clip: text;
   filter: drop-shadow(5px 5px #fff);
-  @media (max-width: ${BREAKPOINTS.small}) {
+  @media (max-width: ${BREAKPOINTS.large}) and (max-height: ${BREAKPOINTS.small}) {
     font-size: 40px;
   }
 `;
@@ -61,7 +61,7 @@ export const ButtonPlay = styled.div`
     &:active {
       filter: drop-shadow(0px 0px #fff);
     }
-    @media (max-width: ${BREAKPOINTS.small}) {
+    @media (max-width: ${BREAKPOINTS.large}) and (max-height: ${BREAKPOINTS.small}) {
       width: 48px;
       height: 48px;
     }
@@ -69,16 +69,18 @@ export const ButtonPlay = styled.div`
 `;
 
 export const Information = styled.div`
-  background: red;
   margin: 32px auto 0;
   border-radius: 8px;
-  text-align: left;
   padding: 64px;
   background: ${({ theme }) => theme.palette.elements.header.main};
   text-align: center;
   box-shadow: ${({ theme }) => theme.boxShadow.medium};
   .underline {
     text-decoration: underline;
+  }
+  @media (max-width: ${BREAKPOINTS.large}) and (max-height: ${BREAKPOINTS.small}) {
+    margin: 8px auto 0;
+    padding: 24px;
   }
 `;
 

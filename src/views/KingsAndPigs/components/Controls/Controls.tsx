@@ -1,6 +1,6 @@
 import { ButtonControl, ControlsStyled } from './Controls.styled';
 import { ControlsKingsAndPigs } from '../../interfaces';
-import { useKeyPress, useWindowSize } from '@/hooks';
+import { useKeyPress } from '@/hooks';
 import { FAIcon } from '@/components';
 import {
   faArrowLeft,
@@ -23,7 +23,6 @@ const Controls = ({ controls }: ControlProps) => {
     onTouchUpEnd,
     onTouchSpecial,
   } = controls;
-  const { isMobile } = useWindowSize();
   useKeyPress('arrowleft', onTouchLeftStart, onTouchLeftEnd);
   useKeyPress('a', onTouchLeftStart, onTouchLeftEnd);
   useKeyPress('arrowright', onTouchRightStart, onTouchRightEnd);
@@ -33,37 +32,35 @@ const Controls = ({ controls }: ControlProps) => {
   useKeyPress('e', onTouchSpecial, () => true);
 
   return (
-    isMobile && (
-      <ControlsStyled>
-        <ButtonControl
-          onTouchStart={controls.onTouchLeftStart}
-          onTouchEnd={controls.onTouchLeftEnd}
-          className='left'
-        >
-          <FAIcon size='xxl' icon={faArrowLeft} />
-        </ButtonControl>
-        <ButtonControl
-          onTouchStart={controls.onTouchRightStart}
-          onTouchEnd={controls.onTouchRightEnd}
-          className='right'
-        >
-          <FAIcon size='xxl' icon={faArrowRight} />
-        </ButtonControl>
-        <ButtonControl
-          onTouchStart={controls.onTouchUpStart}
-          onTouchEnd={controls.onTouchUpEnd}
-          className='down-right'
-        >
-          <FAIcon size='xxl' icon={faArrowUp} />
-        </ButtonControl>
-        <ButtonControl
-          onTouchStart={controls.onTouchSpecial}
-          className='down-left'
-        >
-          <FAIcon size='xxl' icon={faWandMagic} />
-        </ButtonControl>
-      </ControlsStyled>
-    )
+    <ControlsStyled>
+      <ButtonControl
+        onTouchStart={controls.onTouchLeftStart}
+        onTouchEnd={controls.onTouchLeftEnd}
+        className='left'
+      >
+        <FAIcon size='xxl' icon={faArrowLeft} />
+      </ButtonControl>
+      <ButtonControl
+        onTouchStart={controls.onTouchRightStart}
+        onTouchEnd={controls.onTouchRightEnd}
+        className='right'
+      >
+        <FAIcon size='xxl' icon={faArrowRight} />
+      </ButtonControl>
+      <ButtonControl
+        onTouchStart={controls.onTouchUpStart}
+        onTouchEnd={controls.onTouchUpEnd}
+        className='down-right'
+      >
+        <FAIcon size='xxl' icon={faArrowUp} />
+      </ButtonControl>
+      <ButtonControl
+        onTouchStart={controls.onTouchSpecial}
+        className='down-left'
+      >
+        <FAIcon size='xxl' icon={faWandMagic} />
+      </ButtonControl>
+    </ControlsStyled>
   );
 };
 

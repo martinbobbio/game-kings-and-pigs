@@ -12,7 +12,7 @@ export const AppStyled = styled.main`
     font-family: 'Skranji', sans-serif;
   }
 
-  @media (max-width: ${BREAKPOINTS.small}) {
+  @media (max-width: ${BREAKPOINTS.large}) and (max-height: ${BREAKPOINTS.small}) {
     padding: 0;
     user-select: none;
     -webkit-user-select: none;

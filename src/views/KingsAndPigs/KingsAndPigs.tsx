@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Controls, Map, Menu } from './components';
+import { Controls, DetectResolution, Map, Menu } from './components';
 import { ControlsKingsAndPigs } from './interfaces';
 import { useLevel, useResources } from './hooks';
 import { KingsAndPigsStyled } from './KingsAndPigs.styled';
@@ -26,7 +26,7 @@ const KingsAndPigs = () => {
   }, [sounds]);
 
   return (
-    <>
+    <DetectResolution>
       <Menu onStartGame={handleStartGame} isGameRunning={isGameRunning} />
       {isGameRunning && (
         <KingsAndPigsStyled>
@@ -44,7 +44,7 @@ const KingsAndPigs = () => {
         </KingsAndPigsStyled>
       )}
       {isGameRunning && controls && <Controls controls={controls} />}
-    </>
+    </DetectResolution>
   );
 };
 
