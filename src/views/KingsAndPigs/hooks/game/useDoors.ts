@@ -69,6 +69,7 @@ const useDoors = ({ textures, level }: useDoorProps) => {
         currentAnimation: currentAnimations[type],
         animations,
         open: () => (door.currentAnimation = animations.opening),
+        idle: () => (door.currentAnimation = animations.idle),
         close: () => (door.currentAnimation = animations.closing),
       };
       return door;

@@ -20,12 +20,14 @@ export interface LevelKingAndPigs {
   stats: {
     diamonds: number;
     timer: number;
+    lives: number;
   };
   onNextLevel: () => void;
   deleteDiamond: (id: number) => void;
   updatePlayerPosition: (point: Point) => void;
   updatePlayerAttakHitbox: (block?: Block) => void;
-  increaseDiamondStats: () => void;
+  updateDiamonds: (diamonds: number) => void;
+  updateLives: (lives: number) => void;
 }
 
 export interface DecorationsLevel {

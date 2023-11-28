@@ -26,12 +26,14 @@ const useLevel = () => {
     stats: {
       diamonds: 0,
       timer: 0,
+      lives: 3,
     },
     onNextLevel: () => nextLevel(),
     deleteDiamond: (id: number) => deleteDiamond(id),
     updatePlayerPosition: (point: Point) => updatePlayerPosition(point),
     updatePlayerAttakHitbox: (block?: Block) => updatePlayerAttakHitbox(block),
-    increaseDiamondStats: () => increaseDiamondStats(),
+    updateDiamonds: (diamonds: number) => updateDiamonds(diamonds),
+    updateLives: (lives: number) => updateLives(lives),
   });
   const currentLevel = level.current;
 
@@ -62,12 +64,22 @@ const useLevel = () => {
     });
   };
 
-  const increaseDiamondStats = () => {
+  const updateDiamonds = (diamonds: number) => {
     setLevel((prevLevel) => ({
       ...prevLevel,
       stats: {
         ...prevLevel.stats,
-        diamonds: prevLevel.stats.diamonds + 1,
+        diamonds,
+      },
+    }));
+  };
+
+  const updateLives = (lives: number) => {
+    setLevel((prevLevel) => ({
+      ...prevLevel,
+      stats: {
+        ...prevLevel.stats,
+        lives,
       },
     }));
   };

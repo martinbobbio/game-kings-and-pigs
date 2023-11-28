@@ -81,7 +81,7 @@ const GraphicUserInterface = ({ level, textures }: GUIProps) => {
     <>
       <Container scale={scales.livebar} position={positions.livebar}>
         <Sprite texture={textures.livesAndCoins.liveBar} />
-        {hearts.map((heart, i) => (
+        {hearts.splice(0, level.stats.lives).map((heart, i) => (
           <Container key={i} x={heart.x} y={heart.y}>
             <TilingSpriteCustom animation={animations.heart} />
           </Container>

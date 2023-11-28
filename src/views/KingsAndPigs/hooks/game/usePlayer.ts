@@ -63,6 +63,7 @@ const usePlayer = ({
   const [isRunning, setIsRunning] = useState(false);
   const [isJumping, setIsJumping] = useState(false);
   const [isDead, setIsDead] = useState(false);
+  const [blockMovements, setBlockMovements] = useState(false);
   const [elapsedFrames, setElapsedFrames] = useState(0);
   const [inactiveTime, setInactiveTime] = useState(0);
   const boxesBlocks = boxes.map((box) => box.hitbox);
@@ -134,13 +135,26 @@ const usePlayer = ({
     };
     animations.doorIn.onComplete = () => {
       sounds.doorOut.play();
+      doors.filter((door) => door.type === 'prev').map((door) => door.idle());
       setTimeout(() => setCurrentAnimation(animations.idle), 100);
     };
     animations.doorOut.onComplete = () => {
       level.onNextLevel();
     };
     return animations;
-  }, [textures, sounds.doorOut, level]);
+  }, [
+    textures.idle,
+    textures.run,
+    textures.attack,
+    textures.doorIn,
+    textures.doorOut,
+    textures.dead,
+    textures.hit,
+    textures.fall,
+    sounds.doorOut,
+    doors,
+    level,
+  ]);
 
   const initializePlayer = useCallback(
     (): PlayerState => ({
@@ -246,6 +260,7 @@ const usePlayer = ({
   };
 
   const applyMovement = () => {
+    if (blockMovements) return;
     setPositionX(player.position.x + player.velocity.x);
   };
 
@@ -269,7 +284,7 @@ const usePlayer = ({
 
   const pressRun = useCallback(
     (isLeft: boolean) => {
-      if (!isRunning) {
+      if (!isRunning && !blockMovements) {
         setIsRunning(true);
         setInverted(isLeft);
         setVelocityX(isLeft ? -5 : 5);
@@ -282,6 +297,7 @@ const usePlayer = ({
     },
     [
       animations.run,
+      blockMovements,
       isRunning,
       player.inverted,
       player.position.x,
@@ -292,13 +308,13 @@ const usePlayer = ({
 
   const pressStopRun = useCallback(
     (isLeft: boolean) => {
-      if (player.currentAnimation === animations.idle) return;
+      if (player.currentAnimation === animations.idle || blockMovements) return;
       setIsRunning(false);
       setInverted(isLeft);
       setVelocityX(0);
       setCurrentAnimation(animations.idle);
     },
-    [animations.idle, player.currentAnimation, setVelocityX]
+    [animations.idle, blockMovements, player.currentAnimation, setVelocityX]
   );
 
   const getCollision = (a: Block, b: Block) => {
@@ -330,7 +346,7 @@ const usePlayer = ({
       if (getCollision(item.hitbox, player.hitbox)) {
         sounds.diamond.play();
         level.deleteDiamond(i);
-        level.increaseDiamondStats();
+        level.updateDiamonds(level.stats.diamonds + 1);
         addParticle('diamond', item.hitbox.position, player.inverted);
       }
     });
@@ -378,7 +394,8 @@ const usePlayer = ({
   ]);
 
   const pressUp = useCallback(() => {
-    if (player.currentAnimation === animations.doorOut) return;
+    if (player.currentAnimation === animations.doorOut || blockMovements)
+      return;
     else if (isJumping) return;
     setIsJumping(true);
     const door = checkIfCanEnterDoor();
@@ -395,10 +412,11 @@ const usePlayer = ({
     player.velocity.y,
     player.jump.double,
     animations.doorOut,
+    blockMovements,
+    isJumping,
     checkIfCanEnterDoor,
     enterDoor,
     jump,
-    isJumping,
     doubleJump,
   ]);
 
@@ -426,13 +444,16 @@ const usePlayer = ({
       setCurrentAnimation(player.animations.run);
     }
     if (y > 25) {
+      sounds.run.stop();
       sounds.kill.play();
+      level.updateLives(level.stats.lives - 1);
       setIsDead(true);
       setCurrentAnimation(animations.dead);
+
       setTimeout(() => {
         addParticle('disappearing', getPlayerPosition(), player.inverted);
         respawn();
-      }, 3000);
+      }, 1000);
     } else if (y > 10) setIsFalling(true);
     else if (y === 0) setIsFalling(false);
     if (isFalling && player.velocity.y === 0) {
@@ -450,14 +471,17 @@ const usePlayer = ({
     animations.dead,
     sounds.fall,
     sounds.kill,
+    level,
+    sounds.run,
+    doors,
   ]);
 
   const pressAttack = useCallback(() => {
-    if (!sounds.sword.isPlaying) {
+    if (!sounds.sword.isPlaying && !blockMovements) {
       sounds.sword.play();
       setCurrentAnimation(animations.attack);
     }
-  }, [animations.attack, sounds.sword]);
+  }, [animations.attack, blockMovements, sounds.sword]);
 
   const checkSayHello = () => {
     const { x, y } = player.velocity;
@@ -539,6 +563,14 @@ const usePlayer = ({
     getPlayerPosition,
     addParticle,
   ]);
+
+  useEffect(() => {
+    const { currentAnimation } = player;
+    const isIdle = currentAnimation.texture === animations.idle.texture;
+    const isRun = currentAnimation.texture === animations.run.texture;
+    if (isIdle || isRun) setBlockMovements(false);
+    else setBlockMovements(true);
+  }, [animations, player]);
 
   useTick(() => {
     setElapsedFrames(elapsedFrames + 1);

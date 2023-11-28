@@ -8,6 +8,7 @@ export interface DoorState {
   currentAnimation: Animation;
   animations: DoorAnimations;
   open: () => void;
+  idle: () => void;
   close: () => void;
 }
 

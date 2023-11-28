@@ -77,7 +77,8 @@ const useParticles = ({ textures }: useParticlesProps) => {
         position.y += 23;
         position.x += inverted ? 21 : 0;
       } else if (key === 'disappearing') {
-        // TO-DO: Continue here
+        position.y += 16;
+        position.x += inverted ? 32 : 16;
       }
       currentAnimation.onComplete = () => {
         setParticles((prev) => {
