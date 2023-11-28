@@ -54,6 +54,7 @@ const texturePaths: TexturePaths = {
     fall: `${uri}particles/fall.png`,
     run: `${uri}particles/run.png`,
     diamond: `${uri}particles/diamond.png`,
+    disappearing: `${uri}particles/disappearing.png`,
   },
   item: {
     heart: `${uri}item/heart.png`,
@@ -80,6 +81,7 @@ const soundPaths: SoundPaths = {
   fall: '../sound/fall.mp3',
   run: '../sound/run.mp3',
   boxBreak: '../sound/box-break.mp3',
+  kill: '../sound/kill.wav',
 };
 
 /**
@@ -118,6 +120,7 @@ const useResources = () => {
       sounds.run.loop = true;
       sounds.run.speed = 1.5;
       sounds.boxBreak.volume = 0.2;
+      sounds.kill.volume = 0.5;
     }
   }, [sounds]);
 

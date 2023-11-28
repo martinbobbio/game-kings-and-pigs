@@ -9,6 +9,9 @@ const useWindowSize = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [width, setWidth] = useState(window.innerWidth);
   const [heigth, setHeight] = useState(window.innerHeight);
+  const [isFullscreen, setIsFullscreen] = useState(
+    !!document.fullscreenElement
+  );
 
   useEffect(() => {
     const checkIsMobile = () => {
@@ -21,6 +24,10 @@ const useWindowSize = () => {
       setHeight(window.innerHeight);
     };
 
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
     checkIsMobile();
 
     window.addEventListener('resize', () => {
@@ -28,12 +35,14 @@ const useWindowSize = () => {
       checkIsMobile();
     });
 
+    window.addEventListener('fullscreenchange', handleFullscreenChange);
+
     return () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
 
-  return { isMobile, heigth, width };
+  return { isMobile, heigth, width, isFullscreen };
 };
 
 export default useWindowSize;

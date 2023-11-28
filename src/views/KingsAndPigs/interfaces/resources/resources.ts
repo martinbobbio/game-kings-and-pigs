@@ -23,6 +23,7 @@ export interface TexturesKingsAndPigs {
 
 export interface SoundsKingsAndPigs {
   music: Sound;
+  kill: Sound;
   sword: Sound;
   walk: Sound;
   jump: Sound;

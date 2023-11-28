@@ -45,6 +45,14 @@ const useParticles = ({ textures }: useParticlesProps) => {
         texture: textures.diamond,
         invertedTile: true,
       },
+      disappearing: {
+        autoplay: true,
+        loop: false,
+        frameBuffer: 4,
+        frameRate: 7,
+        texture: textures.disappearing,
+        invertedTile: true,
+      },
     };
   }, [textures]);
 
@@ -68,6 +76,8 @@ const useParticles = ({ textures }: useParticlesProps) => {
       } else if (key === 'run') {
         position.y += 23;
         position.x += inverted ? 21 : 0;
+      } else if (key === 'disappearing') {
+        // TO-DO: Continue here
       }
       currentAnimation.onComplete = () => {
         setParticles((prev) => {

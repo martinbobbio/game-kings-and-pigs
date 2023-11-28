@@ -57,13 +57,14 @@ const usePlayer = ({
 }: usePlayerProps) => {
   const { initialPosition, collisionBlocks, platformBlocks } = level;
   const { applyHorizontal, applyVertical } = useCollisions();
+  const { addParticle } = particles;
+  const { addDialog, deleteDialog } = dialogBox;
   const [isFalling, setIsFalling] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [isJumping, setIsJumping] = useState(false);
+  const [isDead, setIsDead] = useState(false);
   const [elapsedFrames, setElapsedFrames] = useState(0);
   const [inactiveTime, setInactiveTime] = useState(0);
-  const { addParticle } = particles;
-  const { addDialog, deleteDialog } = dialogBox;
   const boxesBlocks = boxes.map((box) => box.hitbox);
 
   const animations = useMemo(() => {
@@ -141,23 +142,28 @@ const usePlayer = ({
     return animations;
   }, [textures, sounds.doorOut, level]);
 
-  const [player, setPlayer] = useState<PlayerState>({
-    position: initialPosition,
-    velocity: new Point(0, 0),
-    gravity: 1,
-    inverted: false,
-    jump: {
-      power: 15,
-      double: true,
-    },
-    currentAnimation: animations.doorIn,
-    hitbox: {
+  const initializePlayer = useCallback(
+    (): PlayerState => ({
       position: new Point(initialPosition.x, initialPosition.y),
-      width: 24,
-      height: 26,
-    },
-    animations,
-  });
+      velocity: new Point(0, 0),
+      gravity: 1,
+      inverted: false,
+      jump: {
+        power: 15,
+        double: true,
+      },
+      currentAnimation: animations.doorIn,
+      hitbox: {
+        position: new Point(initialPosition.x, initialPosition.y),
+        width: 24,
+        height: 26,
+      },
+      animations,
+    }),
+    [animations, initialPosition]
+  );
+
+  const [player, setPlayer] = useState<PlayerState>(initializePlayer());
 
   const updateAttackHitbox = useCallback(() => {
     const offsetX = player.inverted ? -24 : 24;
@@ -400,30 +406,50 @@ const usePlayer = ({
     setIsJumping(false);
   }, []);
 
+  const respawn = useCallback(() => {
+    const door = doors.find((d) => d.type === 'prev');
+    setIsDead(false);
+    setIsRunning(false);
+    setIsJumping(false);
+    setIsFalling(false);
+    setInactiveTime(0);
+    setElapsedFrames(0);
+    setPlayer(initializePlayer());
+    door?.open();
+  }, [doors, initializePlayer]);
+
   useEffect(() => {
+    if (isDead) return;
     const { x, y } = player.velocity;
     const { currentAnimation } = player;
     if (currentAnimation === animations.idle && x) {
       setCurrentAnimation(player.animations.run);
     }
-    if (y > 10) setIsFalling(true);
+    if (y > 25) {
+      sounds.kill.play();
+      setIsDead(true);
+      setCurrentAnimation(animations.dead);
+      setTimeout(() => {
+        addParticle('disappearing', getPlayerPosition(), player.inverted);
+        respawn();
+      }, 3000);
+    } else if (y > 10) setIsFalling(true);
     else if (y === 0) setIsFalling(false);
     if (isFalling && player.velocity.y === 0) {
       sounds.fall.play();
       addParticle('fall', getPlayerPosition(), player.inverted);
     }
   }, [
-    sounds.fall,
     addParticle,
     getPlayerPosition,
+    respawn,
     animations.idle,
-    elapsedFrames,
-    player,
-    player.animations.run,
-    player.currentAnimation,
-    player.velocity,
-    player.velocity.x,
+    isDead,
     isFalling,
+    player,
+    animations.dead,
+    sounds.fall,
+    sounds.kill,
   ]);
 
   const pressAttack = useCallback(() => {

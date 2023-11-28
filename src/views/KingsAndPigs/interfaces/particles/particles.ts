@@ -21,6 +21,7 @@ export interface ParticlesAnimations {
   jump: Animation;
   run: Animation;
   diamond: Animation;
+  disappearing: Animation;
 }
 
 export interface ParticlesTextures {
@@ -28,4 +29,5 @@ export interface ParticlesTextures {
   jump: Texture;
   run: Texture;
   diamond: Texture;
+  disappearing: Texture;
 }
