@@ -28,7 +28,6 @@ const useKeyPress = (
     window.addEventListener('keydown', handleKeyDown, false);
     window.addEventListener('keyup', handleKeyUp, false);
 
-    // Limpia los listeners cuando el componente se desmonta
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);

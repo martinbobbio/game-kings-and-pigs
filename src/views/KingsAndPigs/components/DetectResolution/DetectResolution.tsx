@@ -14,11 +14,12 @@ interface DetectResolutionProps {
  * @return React.ReactElement <DetectResolution/>
  */
 const DetectResolution = ({ children }: DetectResolutionProps) => {
-  const { isMobile } = useWindowSize();
+  const { isMobile, isOrientationAngleZero } = useWindowSize();
+  const shouldChangeOrientation = isMobile && isOrientationAngleZero;
 
   return (
     <>
-      {isMobile && (
+      {shouldChangeOrientation && (
         <ChangeOrientationContainer>
           <FAIcon size='xxl' animation='beat' icon={faRotate} />
           <Text size='xl'>Girar dispositivo</Text>
@@ -26,7 +27,7 @@ const DetectResolution = ({ children }: DetectResolutionProps) => {
           <Text size='md'>Por favor gire su dispositivo horizontalmente.</Text>
         </ChangeOrientationContainer>
       )}
-      {!isMobile && children}
+      {!shouldChangeOrientation && children}
     </>
   );
 };

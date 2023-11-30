@@ -309,12 +309,18 @@ const usePlayer = ({
   const pressStopRun = useCallback(
     (isLeft: boolean) => {
       if (player.currentAnimation === animations.idle || blockMovements) return;
+      else if (player.inverted !== isLeft) return;
       setIsRunning(false);
-      setInverted(isLeft);
       setVelocityX(0);
       setCurrentAnimation(animations.idle);
     },
-    [animations.idle, blockMovements, player.currentAnimation, setVelocityX]
+    [
+      animations.idle,
+      blockMovements,
+      player.currentAnimation,
+      player.inverted,
+      setVelocityX,
+    ]
   );
 
   const getCollision = (a: Block, b: Block) => {
@@ -437,43 +443,51 @@ const usePlayer = ({
   }, [doors, initializePlayer]);
 
   useEffect(() => {
-    if (isDead) return;
-    const { x, y } = player.velocity;
+    const { x } = player.velocity;
     const { currentAnimation } = player;
     if (currentAnimation === animations.idle && x) {
       setCurrentAnimation(player.animations.run);
     }
-    if (y > 25) {
+  }, [animations.idle, player]);
+
+  useEffect(() => {
+    const { y } = player.velocity;
+
+    const dead = () => {
+      setIsDead(false);
       sounds.run.stop();
       sounds.kill.play();
       level.updateLives(level.stats.lives - 1);
-      setIsDead(true);
       setCurrentAnimation(animations.dead);
-
       setTimeout(() => {
         addParticle('disappearing', getPlayerPosition(), player.inverted);
         respawn();
       }, 1000);
-    } else if (y > 10) setIsFalling(true);
-    else if (y === 0) setIsFalling(false);
-    if (isFalling && player.velocity.y === 0) {
+    };
+
+    const fall = () => {
       sounds.fall.play();
+      setIsFalling(false);
       addParticle('fall', getPlayerPosition(), player.inverted);
-    }
+    };
+
+    if (y > 25) setIsDead(true);
+    else if (y > 10) setIsFalling(true);
+
+    if (isDead && player.velocity.y === 0) dead();
+    else if (isFalling && player.velocity.y === 0) fall();
   }, [
     addParticle,
+    animations.dead,
     getPlayerPosition,
-    respawn,
-    animations.idle,
     isDead,
     isFalling,
+    level,
     player,
-    animations.dead,
+    respawn,
     sounds.fall,
     sounds.kill,
-    level,
     sounds.run,
-    doors,
   ]);
 
   const pressAttack = useCallback(() => {
@@ -543,11 +557,8 @@ const usePlayer = ({
   ]);
 
   useEffect(() => {
-    if (isRunning) {
-      sounds.run.play();
-    } else {
-      sounds.run.stop();
-    }
+    if (isRunning) sounds.run.play();
+    else sounds.run.stop();
   }, [isRunning, sounds.run]);
 
   useEffect(() => {
@@ -568,7 +579,8 @@ const usePlayer = ({
     const { currentAnimation } = player;
     const isIdle = currentAnimation.texture === animations.idle.texture;
     const isRun = currentAnimation.texture === animations.run.texture;
-    if (isIdle || isRun) setBlockMovements(false);
+    const isAttack = currentAnimation.texture === animations.attack.texture;
+    if (isIdle || isRun || isAttack) setBlockMovements(false);
     else setBlockMovements(true);
   }, [animations, player]);
 

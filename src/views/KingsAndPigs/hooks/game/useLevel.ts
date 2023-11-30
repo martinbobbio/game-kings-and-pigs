@@ -10,7 +10,7 @@ import { Assets, Point, Texture } from 'pixi.js';
  */
 const useLevel = () => {
   const [level, setLevel] = useState<LevelKingAndPigs>({
-    current: 1,
+    current: 3,
     texture: null,
     collisionBlocks: [],
     platformBlocks: [],
@@ -94,9 +94,9 @@ const useLevel = () => {
   };
 
   const loadLevelTexture = useCallback(async () => {
-    const source = await import(`../../data/level-${currentLevel}.png`).then(
-      (module) => module.default
-    );
+    const source = await import(
+      `../../../../data/chapter-1/level-${currentLevel}.png`
+    ).then((module) => module.default);
     const resources: Record<string, Texture> = await Assets.load([source]);
     const texture = resources[source];
     setLevel((prevLevel) => ({ ...prevLevel, texture }));
@@ -104,7 +104,7 @@ const useLevel = () => {
 
   const loadlLevelData = useCallback(async () => {
     const levelData: LevelData = await import(
-      `../../data/level-${currentLevel}.json`
+      `../../../../data/chapter-1/level-${currentLevel}.json`
     ).then((module) => module.default);
 
     const main = levelData.layers.find(

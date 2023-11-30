@@ -18,7 +18,7 @@ interface GUIProps {
  * @return React.ReactElement <GUI/>
  */
 const GraphicUserInterface = ({ level, textures }: GUIProps) => {
-  const { isMobile, width } = useWindowSize();
+  const { width, isOrientationAngleZero } = useWindowSize();
   const animations = useMemo(() => {
     return {
       heart: {
@@ -60,13 +60,13 @@ const GraphicUserInterface = ({ level, textures }: GUIProps) => {
   });
 
   const positions = {
-    livebar: new Point(16, 16),
-    level: new Point(!isMobile ? width / 2 - 64 : width * 0.65, 32),
+    livebar: new Point(16, 32),
+    level: new Point(width / 2, 32),
   };
 
   const scales = {
-    livebar: 1.8,
-    level: 1.5,
+    livebar: isOrientationAngleZero ? 1.8 : 1.2,
+    level: isOrientationAngleZero ? 1 : 0.7,
   };
 
   const formatTimer = (timer: number) => {
@@ -93,7 +93,7 @@ const GraphicUserInterface = ({ level, textures }: GUIProps) => {
           <TilingSpriteCustom animation={animations.numbers} />
         </Container>
       </Container>
-      <Container position={positions.level}>
+      <Container scale={scales.level} position={positions.level}>
         <Graphics
           draw={(g) => {
             g.clear();
@@ -102,15 +102,11 @@ const GraphicUserInterface = ({ level, textures }: GUIProps) => {
             g.endFill();
           }}
         />
+        <Text text={`Level ${level.current}`} scale={1.5} style={textStyle} />
         <Text
-          scale={scales.level}
-          text={`Level ${level.current}`}
-          style={textStyle}
-        />
-        <Text
-          scale={scales.level}
           y={32}
           x={12}
+          scale={1.5}
           text={`${formatTimer(level.stats.timer)}`}
           style={textStyle}
         />

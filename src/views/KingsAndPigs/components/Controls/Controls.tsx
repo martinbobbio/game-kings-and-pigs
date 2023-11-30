@@ -23,6 +23,7 @@ const Controls = ({ controls }: ControlProps) => {
     onTouchUpEnd,
     onTouchSpecial,
   } = controls;
+
   useKeyPress('arrowleft', onTouchLeftStart, onTouchLeftEnd);
   useKeyPress('a', onTouchLeftStart, onTouchLeftEnd);
   useKeyPress('arrowright', onTouchRightStart, onTouchRightEnd);

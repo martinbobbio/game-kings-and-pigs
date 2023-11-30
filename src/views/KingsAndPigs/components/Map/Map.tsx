@@ -36,10 +36,10 @@ const Map = ({ textures, sounds, level, setControls }: MapProps) => {
   return (
     <Stage
       width={windowSize.width}
-      height={windowSize.heigth}
+      height={windowSize.height}
       options={{ background: '#3f3851' }}
     >
-      <Camera player={player} width={width} height={height}>
+      <Camera player={player} width={width} height={height} texture={texture}>
         <Sprite width={width} height={height} texture={texture} />
         <Game
           setControls={setControls}

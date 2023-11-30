@@ -64,6 +64,7 @@ export const ButtonPlay = styled.div`
     @media (max-width: ${BREAKPOINTS.large}) and (max-height: ${BREAKPOINTS.small}) {
       width: 48px;
       height: 48px;
+      margin-bottom: 12px;
     }
   }
 `;
@@ -80,7 +81,10 @@ export const Information = styled.div`
   }
   @media (max-width: ${BREAKPOINTS.large}) and (max-height: ${BREAKPOINTS.small}) {
     margin: 8px auto 0;
-    padding: 24px;
+    padding: 12px;
+    br {
+      display: none;
+    }
   }
 `;
 

@@ -8,14 +8,17 @@ import { useEffect, useState } from 'react';
 const useWindowSize = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [width, setWidth] = useState(window.innerWidth);
-  const [heigth, setHeight] = useState(window.innerHeight);
+  const [height, setHeight] = useState(window.innerHeight);
   const [isFullscreen, setIsFullscreen] = useState(
     !!document.fullscreenElement
+  );
+  const [isOrientationAngleZero, setIsOrientationAngleZero] = useState(
+    window.screen.orientation?.angle === 0
   );
 
   useEffect(() => {
     const checkIsMobile = () => {
-      const isMobileQuery = window.matchMedia('(max-width: 768px)');
+      const isMobileQuery = window.matchMedia('(max-width: 600px)');
       setIsMobile(isMobileQuery.matches);
     };
 
@@ -28,21 +31,29 @@ const useWindowSize = () => {
       setIsFullscreen(!!document.fullscreenElement);
     };
 
+    const handleOrientationChange = () => {
+      setIsOrientationAngleZero(window.screen.orientation?.angle === 0);
+    };
+
     checkIsMobile();
 
     window.addEventListener('resize', () => {
       handleResize();
+      handleOrientationChange();
       checkIsMobile();
     });
 
     window.addEventListener('fullscreenchange', handleFullscreenChange);
+    window.addEventListener('orientationchange', handleOrientationChange);
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('fullscreenchange', handleFullscreenChange);
+      window.removeEventListener('orientationchange', handleOrientationChange);
     };
   }, []);
 
-  return { isMobile, heigth, width, isFullscreen };
+  return { isMobile, height, width, isFullscreen, isOrientationAngleZero };
 };
 
 export default useWindowSize;

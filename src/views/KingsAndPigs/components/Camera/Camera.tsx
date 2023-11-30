@@ -1,12 +1,13 @@
 import { Container } from '@pixi/react';
 import { useWindowSize } from '@/hooks';
-import { Point } from 'pixi.js';
+import { Point, Texture } from 'pixi.js';
 
 interface CameraProps {
   player: Point;
   children: React.ReactNode;
   width: number;
   height: number;
+  texture: Texture;
 }
 
 /**
@@ -16,15 +17,16 @@ interface CameraProps {
  * @param children for wrap the content
  * @param width for according to the map texture
  * @param height for according to the map texture
+ * @param texture for centring the level
  * @return React.ReactElement <Camera/>
  */
-const Camera = ({ player, children, width, height }: CameraProps) => {
+const Camera = ({ player, children, width, height, texture }: CameraProps) => {
   const windowSize = useWindowSize();
 
-  const scale = 1.8;
+  const scale = 1.7;
 
   const centerX = windowSize.width / 2;
-  const centerY = windowSize.heigth / 2;
+  const centerY = windowSize.height / 2;
 
   const minX = centerX / scale;
   const minY = centerY / scale;
@@ -37,9 +39,16 @@ const Camera = ({ player, children, width, height }: CameraProps) => {
   const x = centerX - cameraX * scale;
   const y = centerY - cameraY * scale;
 
+  const windowOffsetX =
+    texture.width * scale < windowSize.width
+      ? (windowSize.width - texture.width * scale) / 2
+      : 0;
+
   return (
-    <Container scale={scale} x={x} y={y}>
-      {children}
+    <Container x={x} y={y}>
+      <Container scale={scale} x={-windowOffsetX} y={0}>
+        {children}
+      </Container>
     </Container>
   );
 };
