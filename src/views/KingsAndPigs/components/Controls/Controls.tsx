@@ -1,19 +1,25 @@
-import { ButtonControl, ControlsStyled } from './Controls.styled';
+import {
+  ButtonControl,
+  ControlsStyled,
+  JoystickContainer,
+} from './Controls.styled';
 import { ControlsKingsAndPigs } from '../../interfaces';
 import { useKeyPress } from '@/hooks';
 import { FAIcon } from '@/components';
+import { faBurst, faUpLong } from '@fortawesome/free-solid-svg-icons';
+import { JoystickShape } from 'react-joystick-component';
 import {
-  faArrowLeft,
-  faArrowRight,
-  faArrowUp,
-  faWandMagic,
-} from '@fortawesome/free-solid-svg-icons';
+  IJoystickUpdateEvent,
+  Joystick,
+} from 'react-joystick-component/build/lib/Joystick';
+import { useState } from 'react';
 
 interface ControlProps {
   controls: ControlsKingsAndPigs;
 }
 
 const Controls = ({ controls }: ControlProps) => {
+  const [lastDirection, setLastDirection] = useState<string>();
   const {
     onTouchLeftStart,
     onTouchLeftEnd,
@@ -32,35 +38,54 @@ const Controls = ({ controls }: ControlProps) => {
   useKeyPress('w', onTouchUpStart, onTouchUpEnd);
   useKeyPress('e', onTouchSpecial, () => true);
 
+  const handleJoystickMove = (event: IJoystickUpdateEvent) => {
+    console.log(event);
+    if (event.distance && event.distance < 40) return;
+    if (event.direction === 'LEFT' && lastDirection === 'RIGHT') {
+      onTouchRightEnd();
+      setLastDirection('');
+    } else if (event.direction === 'RIGHT' && lastDirection === 'LEFT') {
+      onTouchLeftEnd();
+      setLastDirection('');
+    } else if (event.direction === 'RIGHT' && lastDirection !== 'RIGHT') {
+      setLastDirection(event.direction);
+      onTouchRightStart();
+    } else if (event.direction === 'LEFT' && lastDirection !== 'LEFT') {
+      setLastDirection(event.direction);
+      onTouchLeftStart();
+    }
+  };
+
+  const handleJoystickStop = () => {
+    if (lastDirection === 'RIGHT') {
+      onTouchRightEnd();
+      setLastDirection('');
+    } else if (lastDirection === 'LEFT') {
+      onTouchLeftEnd();
+      setLastDirection('');
+    }
+  };
+
   return (
     <ControlsStyled>
       <ButtonControl
-        onTouchStart={controls.onTouchLeftStart}
-        onTouchEnd={controls.onTouchLeftEnd}
-        className='left'
+        onTouchStart={onTouchUpStart}
+        onTouchEnd={onTouchUpEnd}
+        className='jump'
       >
-        <FAIcon size='xxl' icon={faArrowLeft} />
+        <FAIcon size='xxl' icon={faUpLong} />
       </ButtonControl>
-      <ButtonControl
-        onTouchStart={controls.onTouchRightStart}
-        onTouchEnd={controls.onTouchRightEnd}
-        className='right'
-      >
-        <FAIcon size='xxl' icon={faArrowRight} />
+      <ButtonControl onTouchStart={onTouchSpecial} className='attack'>
+        <FAIcon size='xxl' icon={faBurst} />
       </ButtonControl>
-      <ButtonControl
-        onTouchStart={controls.onTouchUpStart}
-        onTouchEnd={controls.onTouchUpEnd}
-        className='down-right'
-      >
-        <FAIcon size='xxl' icon={faArrowUp} />
-      </ButtonControl>
-      <ButtonControl
-        onTouchStart={controls.onTouchSpecial}
-        className='down-left'
-      >
-        <FAIcon size='xxl' icon={faWandMagic} />
-      </ButtonControl>
+      <JoystickContainer>
+        <Joystick
+          size={100}
+          move={handleJoystickMove}
+          stop={handleJoystickStop}
+          controlPlaneShape={JoystickShape.AxisX}
+        />
+      </JoystickContainer>
     </ControlsStyled>
   );
 };

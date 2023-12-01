@@ -8,6 +8,8 @@ export const ControlsStyled = styled.div`
   width: 100%;
   bottom: 0;
   display: none;
+  .test {
+  }
   @media (max-width: ${BREAKPOINTS.large}) and (max-height: ${BREAKPOINTS.small}) {
     display: initial;
   }
@@ -15,23 +17,31 @@ export const ControlsStyled = styled.div`
 
 export const ButtonControl = styled.div`
   position: absolute;
-  padding: 16px;
-  border-radius: 50%;
+  width: 72px;
+  height: 72px;
+  border-radius: 100%;
   background: ${({ theme }) => theme.palette.elements.header.main};
-  &.left {
-    bottom: 0px;
-    left: 0px;
+  svg {
+    margin-top: 20px;
   }
-  &.right {
-    bottom: 0px;
-    right: 0px;
+  &.attack {
+    right: 16px;
+    bottom: 96px;
   }
-  &.down-right {
-    bottom: 78px;
-    right: 0;
+  &.jump {
+    right: 96px;
+    bottom: 8px;
   }
-  &.down-left {
-    bottom: 78px;
-    left: 0;
+`;
+
+export const JoystickContainer = styled.div`
+  position: absolute;
+  bottom: 24px;
+  left: 56px;
+  & div {
+    background: ${({ theme }) => theme.palette.elements.header.main} !important;
+  }
+  & button {
+    background: ${({ theme }) => theme.palette.white.main} !important;
   }
 `;
