@@ -39,7 +39,6 @@ const Controls = ({ controls }: ControlProps) => {
   useKeyPress('e', onTouchSpecial, () => true);
 
   const handleJoystickMove = (event: IJoystickUpdateEvent) => {
-    console.log(event);
     if (event.distance && event.distance < 40) return;
     if (event.direction === 'LEFT' && lastDirection === 'RIGHT') {
       onTouchRightEnd();

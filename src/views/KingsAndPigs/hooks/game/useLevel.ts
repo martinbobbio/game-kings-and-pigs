@@ -17,7 +17,7 @@ import { Assets, Point, Texture } from 'pixi.js';
  */
 const useLevel = () => {
   const [level, setLevel] = useState<LevelKingAndPigs>({
-    current: 4,
+    current: 3,
     texture: null,
     collisionBlocks: [],
     platformBlocks: [],
@@ -135,10 +135,6 @@ const useLevel = () => {
     };
 
     const getDoors = (): LevelDoor[] => {
-      doorPrev.position.x += secondaryLayers.doorPrev?.offsetx || 0;
-      doorPrev.position.y += secondaryLayers.doorPrev?.offsety || 0;
-      doorNext.position.x += secondaryLayers.doorNext?.offsetx || 0;
-      doorNext.position.y += secondaryLayers.doorNext?.offsety || 0;
       return [
         {
           type: 'next',
@@ -190,6 +186,13 @@ const useLevel = () => {
       doorPrev.position.x - 16,
       doorPrev.position.y
     );
+
+    doorPrev.position.x += secondaryLayers.doorPrev?.offsetx || 0;
+    doorPrev.position.y += secondaryLayers.doorPrev?.offsety || 0;
+    doorNext.position.x += secondaryLayers.doorNext?.offsetx || 0;
+    doorNext.position.y += secondaryLayers.doorNext?.offsety || 0;
+    initialPosition.x += secondaryLayers.doorPrev?.offsetx || 0;
+    initialPosition.y += secondaryLayers.doorPrev?.offsety || 0;
 
     setLevel((prevLevel) => ({
       ...prevLevel,
