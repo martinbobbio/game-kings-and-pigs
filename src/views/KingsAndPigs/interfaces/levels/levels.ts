@@ -45,23 +45,29 @@ export interface LevelDoor {
 export interface LevelData {
   width: number;
   height: number;
-  layers: {
-    id: number;
-    opacity: number;
-    name: string;
-    type: string;
-    visible: boolean;
-    x: number;
-    y: number;
-    layers: {
-      data: number[];
-      id: number;
-      opacity: number;
-      name: string;
-      type: string;
-      visible: boolean;
-      x: number;
-      y: number;
-    }[];
-  }[];
+  layers: LayerPrimary[];
+}
+
+export interface LayerPrimary {
+  id: number;
+  opacity: number;
+  name: string;
+  type: string;
+  visible: boolean;
+  x: number;
+  y: number;
+  layers: LayerSecondary[];
+}
+
+export interface LayerSecondary {
+  data: number[];
+  id: number;
+  opacity: number;
+  name: string;
+  type: string;
+  visible: boolean;
+  x: number;
+  y: number;
+  offsetx?: number;
+  offsety?: number;
 }

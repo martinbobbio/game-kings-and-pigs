@@ -44,9 +44,14 @@ const Camera = ({ player, children, width, height, texture }: CameraProps) => {
       ? (windowSize.width - texture.width * scale) / 2
       : 0;
 
+  const windowOffsetY =
+    texture.height * scale < windowSize.height
+      ? (windowSize.height - texture.height * scale) / 2
+      : 0;
+
   return (
     <Container x={x} y={y}>
-      <Container scale={scale} x={-windowOffsetX} y={0}>
+      <Container scale={scale} x={-windowOffsetX} y={-windowOffsetY}>
         {children}
       </Container>
     </Container>

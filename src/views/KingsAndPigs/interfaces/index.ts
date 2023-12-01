@@ -13,6 +13,9 @@ export type {
   LevelKingAndPigs,
   DecorationsLevel,
   LevelData,
+  LayerPrimary,
+  LayerSecondary,
+  LevelDoor,
 } from './levels/levels';
 export type { Animation } from './animation/animation';
 export type { Block } from './block/block';

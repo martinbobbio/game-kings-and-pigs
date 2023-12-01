@@ -48,7 +48,7 @@ const useDoors = ({ textures, level }: useDoorProps) => {
     return animations;
   }, [textures.closing, textures.idle, textures.opening]);
 
-  const getInitialPosition = (block: Block): Point => {
+  const getPosition = (block: Block): Point => {
     const offsetY = 9;
     const offsetX = 25;
     const x = block.position.x - block.width + offsetX;
@@ -63,7 +63,7 @@ const useDoors = ({ textures, level }: useDoorProps) => {
         next: animations.idle,
       };
       const door: DoorState = {
-        position: getInitialPosition(block),
+        position: getPosition(block),
         hitbox: block,
         type,
         currentAnimation: currentAnimations[type],

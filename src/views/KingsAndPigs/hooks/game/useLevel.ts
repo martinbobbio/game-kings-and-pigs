@@ -1,6 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { blocksFrom2D, parse2D } from '@/utils';
-import { LevelKingAndPigs, LevelData, Block } from '../../interfaces';
+import {
+  LevelKingAndPigs,
+  LevelData,
+  Block,
+  LayerPrimary,
+  LayerSecondary,
+  LevelDoor,
+} from '../../interfaces';
 import { Assets, Point, Texture } from 'pixi.js';
 
 /**
@@ -10,7 +17,7 @@ import { Assets, Point, Texture } from 'pixi.js';
  */
 const useLevel = () => {
   const [level, setLevel] = useState<LevelKingAndPigs>({
-    current: 3,
+    current: 4,
     texture: null,
     collisionBlocks: [],
     platformBlocks: [],
@@ -106,76 +113,101 @@ const useLevel = () => {
     const levelData: LevelData = await import(
       `../../../../data/chapter-1/level-${currentLevel}.json`
     ).then((module) => module.default);
-
-    const main = levelData.layers.find(
-      ({ name }) => name === 'Detections'
-    )?.layers;
-
-    const map = levelData.layers.find(({ name }) => name === 'Map')?.layers;
     const w = levelData.width;
 
-    const layers = {
-      platforms: map?.find(({ name }) => name === 'Platforms')?.data,
-      collisions: map?.find(({ name }) => name === 'Blocks')?.data,
-      doorNext: main?.find(({ name }) => name === 'Door Next')?.data,
-      doorPrev: main?.find(({ name }) => name === 'Door Prev')?.data,
-      diamonds: main?.find(({ name }) => name === 'Diamonds')?.data,
-      candles: main?.find(({ name }) => name === 'Candles')?.data,
-      smallChains: main?.find(({ name }) => name === 'Small Chains')?.data,
-      bigChains: main?.find(({ name }) => name === 'Big Chains')?.data,
-      windows: main?.find(({ name }) => name === 'Windows')?.data,
-      boxes: main?.find(({ name }) => name === 'Box')?.data,
+    const getPrimaryLayer = (_name: string, layer?: LayerPrimary[]) => {
+      return layer && layer.find(({ name }) => name === _name);
     };
 
-    const getBlocks = (layer: number[] | undefined, amount: number) => {
-      return layer && blocksFrom2D(parse2D(layer, amount));
+    const getSecondaryLayer = (_name: string, layer?: LayerSecondary[]) => {
+      return layer && layer.find(({ name }) => name === _name);
     };
 
-    const collisionBlocks = getBlocks(layers.collisions, w) || [];
-    const doorNext = getBlocks(layers.doorNext, w)?.[0];
-    const doorPrev = getBlocks(layers.doorPrev, w)?.[0];
-    const diamonds = getBlocks(layers.diamonds, w);
-    const candles = getBlocks(layers.candles, w);
-    const smallChains = getBlocks(layers.smallChains, w);
-    const bigChains = getBlocks(layers.bigChains, w);
-    const windows = getBlocks(layers.windows, w);
-    const boxes = getBlocks(layers.boxes, w);
-    const platformBlocks =
-      (layers.platforms &&
-        blocksFrom2D(parse2D(layers.platforms, w), 32, 10)) ||
-      [];
+    const getBlocks = (layer?: number[]) => {
+      const w = levelData.width;
+      if (!layer) return [];
+      return blocksFrom2D(parse2D(layer, w));
+    };
 
-    if (doorNext && doorPrev) {
-      setLevel((prevLevel) => ({
-        ...prevLevel,
-        collisionBlocks,
-        platformBlocks,
-        doors: [
-          {
-            type: 'next',
-            block: doorNext,
-          },
-          {
-            type: 'prev',
-            block: doorPrev,
-          },
-        ],
-        initialPosition: new Point(
-          doorPrev.position.x - 16,
-          doorPrev.position.y
-        ),
-        boxes,
-        decorations: {
-          candles,
-          smallChains,
-          bigChains,
-          windows,
+    const getBlocksPlatform = (layer?: number[]) => {
+      if (!layer) return [];
+      return blocksFrom2D(parse2D(layer, w), 32, 10);
+    };
+
+    const getDoors = (): LevelDoor[] => {
+      doorPrev.position.x += secondaryLayers.doorPrev?.offsetx || 0;
+      doorPrev.position.y += secondaryLayers.doorPrev?.offsety || 0;
+      doorNext.position.x += secondaryLayers.doorNext?.offsetx || 0;
+      doorNext.position.y += secondaryLayers.doorNext?.offsety || 0;
+      return [
+        {
+          type: 'next',
+          block: doorNext,
         },
-        items: {
-          diamonds,
+        {
+          type: 'prev',
+          block: doorPrev,
         },
-      }));
-    }
+      ];
+    };
+
+    const primaryLayers = {
+      detections: getPrimaryLayer('Detections', levelData.layers),
+      map: getPrimaryLayer('Map', levelData.layers),
+    };
+
+    const { map, detections } = primaryLayers;
+    const secondaryLayers = {
+      blocks: getSecondaryLayer('Blocks', map?.layers),
+      platforms: getSecondaryLayer('Platforms', map?.layers),
+      doorNext: getSecondaryLayer('Door Next', detections?.layers),
+      doorPrev: getSecondaryLayer('Door Prev', detections?.layers),
+      diamonds: getSecondaryLayer('Diamonds', detections?.layers),
+      smallChains: getSecondaryLayer('Small Chains', detections?.layers),
+      bigChains: getSecondaryLayer('Big Chains', detections?.layers),
+      candles: getSecondaryLayer('Candles', detections?.layers),
+      windows: getSecondaryLayer('Windows', detections?.layers),
+      boxes: getSecondaryLayer('Box', detections?.layers),
+    };
+
+    const blocks = {
+      blocks: getBlocks(secondaryLayers.blocks?.data),
+      doorNext: getBlocks(secondaryLayers?.doorNext?.data),
+      doorPrev: getBlocks(secondaryLayers?.doorPrev?.data),
+      diamonds: getBlocks(secondaryLayers?.diamonds?.data),
+      smallChains: getBlocks(secondaryLayers?.smallChains?.data),
+      bigChains: getBlocks(secondaryLayers?.bigChains?.data),
+      candles: getBlocks(secondaryLayers?.candles?.data),
+      windows: getBlocks(secondaryLayers?.windows?.data),
+      boxes: getBlocks(secondaryLayers?.boxes?.data),
+      platforms: getBlocksPlatform(secondaryLayers?.platforms?.data),
+    };
+
+    const doorNext = blocks?.doorNext?.[0];
+    const doorPrev = blocks?.doorPrev?.[0];
+
+    const initialPosition = new Point(
+      doorPrev.position.x - 16,
+      doorPrev.position.y
+    );
+
+    setLevel((prevLevel) => ({
+      ...prevLevel,
+      collisionBlocks: blocks.blocks,
+      platformBlocks: blocks.platforms,
+      doors: getDoors(),
+      initialPosition,
+      boxes: blocks.boxes,
+      decorations: {
+        candles: blocks.candles,
+        smallChains: blocks.smallChains,
+        bigChains: blocks.bigChains,
+        windows: blocks.windows,
+      },
+      items: {
+        diamonds: blocks.diamonds,
+      },
+    }));
   }, [currentLevel]);
 
   useEffect(() => {
